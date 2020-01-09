@@ -9,10 +9,13 @@ namespace InMemoryCache.API.Controllers
     public class AwesomeController : ControllerBase
     {
         private readonly IMemoryCache _cache;
-
+        private MemoryCacheEntryOptions _cacheExpirationOptions;
         public AwesomeController(IMemoryCache cache)
         {
             _cache = cache;
+            _cacheExpirationOptions = new MemoryCacheEntryOptions();
+            _cacheExpirationOptions.AbsoluteExpiration = DateTime.Now.AddMinutes(1);
+            _cacheExpirationOptions.Priority = CacheItemPriority.Normal;
         }
 
         // GET api/values
@@ -42,7 +45,7 @@ namespace InMemoryCache.API.Controllers
         {
             try
             {
-                _cache.Set("Greet", "Hello World");
+                _cache.Set("Greet", "Hello World", _cacheExpirationOptions);
                 return new OkResult();
             }
             catch (Exception ex)
